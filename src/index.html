@@ -24,55 +24,47 @@
         <button class="nav-tab" data-tab="rest">休息</button>
         <button class="nav-tab" data-tab="dashboard">数据</button>
       </div>
-      <div class="window-controls">
-        <button class="win-btn" id="win-minimize" title="最小化">
-          <svg width="12" height="12" viewBox="0 0 12 12"><rect y="5" width="12" height="2" fill="currentColor"/></svg>
-        </button>
-        <button class="win-btn" id="win-maximize" title="最大化">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="10" height="10" rx="1"/></svg>
-        </button>
-        <button class="win-btn win-btn-close" id="win-close" title="关闭">
-          <svg width="12" height="12" viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.5"><line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/></svg>
-        </button>
-      </div>
     </nav>
 
-    <!-- 专注页面 -->
-    <div id="focus-page" class="page active">
-      <div class="focus-layout">
-        <!-- 左侧：背景音 -->
-        <div class="sound-panel">
-          <div class="panel-title">背景音</div>
-          <div class="sound-list">
-            <button class="sound-btn" data-sound="white-noise">
-              <span class="sound-icon">📻</span>
-              <span class="sound-name">白噪音</span>
-            </button>
-            <button class="sound-btn" data-sound="rain">
-              <span class="sound-icon">🌧</span>
-              <span class="sound-name">雨声</span>
-            </button>
-            <button class="sound-btn" data-sound="ocean">
-              <span class="sound-icon">🌊</span>
-              <span class="sound-name">海浪</span>
-            </button>
-            <button class="sound-btn" data-sound="forest">
-              <span class="sound-icon">🌲</span>
-              <span class="sound-name">森林</span>
-            </button>
-            <button class="sound-btn" data-sound="cafe">
-              <span class="sound-icon">☕</span>
-              <span class="sound-name">咖啡馆</span>
-            </button>
-          </div>
-          <div class="volume-control">
-            <span class="volume-icon" id="volume-icon" title="点击静音">🔊</span>
-            <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="50">
-          </div>
+    <!-- 主体区域：左侧背景音 + 右侧页面 -->
+    <div class="main-layout">
+      <!-- 左侧：背景音面板 -->
+      <div class="sound-panel">
+        <div class="panel-title">背景音</div>
+        <div class="sound-list">
+          <button class="sound-btn" data-sound="white-noise">
+            <span class="sound-icon">📻</span>
+            <span class="sound-name">白噪音</span>
+          </button>
+          <button class="sound-btn" data-sound="rain">
+            <span class="sound-icon">🌧</span>
+            <span class="sound-name">雨声</span>
+          </button>
+          <button class="sound-btn" data-sound="ocean">
+            <span class="sound-icon">🌊</span>
+            <span class="sound-name">海浪</span>
+          </button>
+          <button class="sound-btn" data-sound="forest">
+            <span class="sound-icon">🌲</span>
+            <span class="sound-name">森林</span>
+          </button>
+          <button class="sound-btn" data-sound="cafe">
+            <span class="sound-icon">☕</span>
+            <span class="sound-name">咖啡馆</span>
+          </button>
         </div>
+        <div class="volume-control">
+          <span class="volume-icon" id="volume-icon" title="点击静音">🔊</span>
+          <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="50">
+        </div>
+      </div>
 
-        <!-- 右侧：计时器 -->
-        <div class="timer-panel">
+      <!-- 右侧：页面内容 -->
+      <div class="page-content">
+        <!-- 专注页面 -->
+        <div id="focus-page" class="page active">
+          <div class="focus-layout">
+            <div class="timer-panel">
           <!-- 时间选择 -->
           <div class="time-presets" id="time-presets">
             <button class="preset-btn active" data-minutes="25">25 min</button>
@@ -177,16 +169,18 @@
     </div>
 
     <!-- 数据看板页面 -->
-    <div id="dashboard-page" class="page">
-      <div class="dashboard-container">
-        <h2 class="section-title">专注时段分布 <span class="section-sub">近 7 天</span></h2>
-        <div class="heatmap-container" id="heatmap"></div>
+        <div id="dashboard-page" class="page">
+          <div class="dashboard-container">
+            <h2 class="section-title">专注时段分布 <span class="section-sub">近 7 天</span></h2>
+            <div class="heatmap-container" id="heatmap"></div>
 
-        <h2 class="section-title">近 7 天趋势</h2>
-        <div class="chart-container" id="weekly-chart"></div>
+            <h2 class="section-title">近 7 天趋势</h2>
+            <div class="chart-container" id="weekly-chart"></div>
 
-        <h2 class="section-title">历史记录</h2>
-        <div class="history-list" id="history-list"></div>
+            <h2 class="section-title">历史记录</h2>
+            <div class="history-list" id="history-list"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -195,10 +189,6 @@
   <div class="bg-picker" id="bg-picker" style="display:none">
     <div class="bg-picker-title">选择背景</div>
     <div class="bg-thumbnails" id="bg-thumbnails"></div>
-    <label class="bg-upload-btn">
-      上传图片
-      <input type="file" id="bg-upload" accept="image/*" style="display:none">
-    </label>
   </div>
 
   <!-- 背景切换按钮 -->

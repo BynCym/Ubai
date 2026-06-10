@@ -3,7 +3,7 @@
   "build": {
     "beforeBuildCommand": "",
     "beforeDevCommand": "",
-    "devPath": "http://localhost:8080",
+    "devPath": "../src",
     "distDir": "../src"
   },
   "package": {
@@ -14,16 +14,6 @@
     "allowlist": {
       "all": false,
       "window": {
-        "all": true
-      },
-      "fs": {
-        "writeFile": true,
-        "readFile": true,
-        "exists": true,
-        "createDir": true,
-        "scope": ["$APPCONFIG/**"]
-      },
-      "path": {
         "all": true
       }
     },
@@ -60,13 +50,12 @@
     "security": {
       "csp": null
     },
-    "devtools": true,
     "updater": {
       "active": false
     },
     "windows": [
       {
-        "decorations": false,
+        "decorations": true,
         "fullscreen": false,
         "height": 600,
         "resizable": true,
