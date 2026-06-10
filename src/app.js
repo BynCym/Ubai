@@ -471,15 +471,12 @@ document.addEventListener('keydown', (e) => {
 });
 
 // 窗口控制按钮
-async function setupWindowControls() {
-  try {
-    const { appWindow } = await import('@tauri-apps/api/window');
-    $('#win-minimize').addEventListener('click', () => appWindow.minimize());
-    $('#win-maximize').addEventListener('click', () => appWindow.toggleMaximize());
-    $('#win-close').addEventListener('click', () => appWindow.close());
-  } catch {
-    // 浏览器环境下窗口按钮不可用，但保持显示
-  }
+function setupWindowControls() {
+  const win = window.__TAURI__?.window?.appWindow;
+  if (!win) return;
+  $('#win-minimize').addEventListener('click', () => win.minimize());
+  $('#win-maximize').addEventListener('click', () => win.toggleMaximize());
+  $('#win-close').addEventListener('click', () => win.close());
 }
 setupWindowControls();
 
