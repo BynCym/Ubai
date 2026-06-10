@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ubai - 专注时光</title>
+  <title>鱼白 - 专注时光</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Liu+Jian+Mao+Cao&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,11 +18,22 @@
   <div id="app">
     <!-- 顶部导航 -->
     <nav class="nav">
-      <div class="nav-brand">Ubai</div>
+      <div class="nav-brand">鱼白</div>
       <div class="nav-tabs">
         <button class="nav-tab active" data-tab="focus">专注</button>
         <button class="nav-tab" data-tab="rest">休息</button>
         <button class="nav-tab" data-tab="dashboard">数据</button>
+      </div>
+      <div class="window-controls">
+        <button class="win-btn" id="win-minimize" title="最小化">
+          <svg width="12" height="12" viewBox="0 0 12 12"><rect y="5" width="12" height="2" fill="currentColor"/></svg>
+        </button>
+        <button class="win-btn" id="win-maximize" title="最大化">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="10" height="10" rx="1"/></svg>
+        </button>
+        <button class="win-btn win-btn-close" id="win-close" title="关闭">
+          <svg width="12" height="12" viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.5"><line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/></svg>
+        </button>
       </div>
     </nav>
 
@@ -30,6 +44,10 @@
         <div class="sound-panel">
           <div class="panel-title">背景音</div>
           <div class="sound-list">
+            <button class="sound-btn" data-sound="white-noise">
+              <span class="sound-icon">📻</span>
+              <span class="sound-name">白噪音</span>
+            </button>
             <button class="sound-btn" data-sound="rain">
               <span class="sound-icon">🌧</span>
               <span class="sound-name">雨声</span>
@@ -38,17 +56,17 @@
               <span class="sound-icon">🌊</span>
               <span class="sound-name">海浪</span>
             </button>
-            <button class="sound-btn" data-sound="wind">
-              <span class="sound-icon">🍃</span>
-              <span class="sound-name">风声</span>
+            <button class="sound-btn" data-sound="forest">
+              <span class="sound-icon">🌲</span>
+              <span class="sound-name">森林</span>
             </button>
-            <button class="sound-btn" data-sound="fire">
-              <span class="sound-icon">🔥</span>
-              <span class="sound-name">篝火</span>
+            <button class="sound-btn" data-sound="cafe">
+              <span class="sound-icon">☕</span>
+              <span class="sound-name">咖啡馆</span>
             </button>
           </div>
           <div class="volume-control">
-            <span class="volume-icon">🔊</span>
+            <span class="volume-icon" id="volume-icon" title="点击静音">🔊</span>
             <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="50">
           </div>
         </div>

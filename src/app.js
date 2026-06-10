@@ -10,6 +10,9 @@ const BG_IMAGES = [
   'assets/images/bg-3.jpg',
   'assets/images/bg-4.jpg',
   'assets/images/bg-5.jpg',
+  'assets/images/bg-6.jpg',
+  'assets/images/bg-7.jpg',
+  'assets/images/bg-8.jpg',
 ];
 
 // ----- 状态 -----
@@ -88,9 +91,18 @@ document.addEventListener('mousemove', (e) => {
 });
 
 // 背景选择面板
-$('#bg-toggle').addEventListener('click', () => {
+$('#bg-toggle').addEventListener('click', (e) => {
+  e.stopPropagation();
   const picker = $('#bg-picker');
   picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
+});
+
+// 点击外部关闭背景选择面板
+document.addEventListener('click', (e) => {
+  const picker = $('#bg-picker');
+  if (picker.style.display !== 'none' && !picker.contains(e.target) && e.target.id !== 'bg-toggle') {
+    picker.style.display = 'none';
+  }
 });
 
 $('#bg-upload').addEventListener('change', (e) => {
@@ -182,7 +194,7 @@ function skipTimer() {
 }
 
 function completeFocusSession() {
-  playBowlSound();
+  playEndSound();
   // 庆祝动画
   timerTime.style.animation = 'celebrate 0.6s ease';
   setTimeout(() => {
@@ -261,96 +273,71 @@ function restTick() {
 }
 
 // ----- 提示音 -----
-let audioCtx;
-function getAudioCtx() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  return audioCtx;
-}
+const END_SOUNDS = ['assets/sounds/bell.mp3', 'assets/sounds/bowl.mp3'];
 
-function playBowlSound() {
-  const ctx = getAudioCtx();
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(528, ctx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(264, ctx.currentTime + 3);
-  gain.gain.setValueAtTime(0.3, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 3);
-  osc.connect(gain);
-  gain.connect(ctx.destination);
-  osc.start(ctx.currentTime);
-  osc.stop(ctx.currentTime + 3);
-
-  // 泛音
-  const osc2 = ctx.createOscillator();
-  const gain2 = ctx.createGain();
-  osc2.type = 'sine';
-  osc2.frequency.setValueAtTime(792, ctx.currentTime);
-  osc2.frequency.exponentialRampToValueAtTime(396, ctx.currentTime + 2.5);
-  gain2.gain.setValueAtTime(0.15, ctx.currentTime);
-  gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2.5);
-  osc2.connect(gain2);
-  gain2.connect(ctx.destination);
-  osc2.start(ctx.currentTime);
-  osc2.stop(ctx.currentTime + 2.5);
+function playEndSound() {
+  const src = END_SOUNDS[Math.floor(Math.random() * END_SOUNDS.length)];
+  const audio = new Audio(src);
+  audio.volume = 0.6;
+  audio.play();
 }
 
 // ----- 背景音 -----
-const SOUND_PRESETS = {
-  rain:  { type: 'noise', filter: 'bandpass', freq: 800,  q: 0.5 },
-  ocean: { type: 'noise', filter: 'lowpass',  freq: 400,  q: 0.3 },
-  wind:  { type: 'noise', filter: 'bandpass', freq: 300,  q: 0.2 },
-  fire:  { type: 'noise', filter: 'bandpass', freq: 200,  q: 0.8 },
+const SOUND_FILES = {
+  'white-noise': 'assets/sounds/white-noise.mp3',
+  'rain': 'assets/sounds/rain.mp3',
+  'ocean': 'assets/sounds/ocean.mp3',
+  'forest': 'assets/sounds/forest.mp3',
+  'cafe': 'assets/sounds/cafe.mp3',
 };
 
-let soundNodes = {};
+let bgAudio = null;
+let isMuted = false;
+let volumeBeforeMute = 50;
 
 function startSound(name) {
   stopSound();
-  const preset = SOUND_PRESETS[name];
-  if (!preset) return;
-
-  const ctx = getAudioCtx();
-  const bufferSize = 2 * ctx.sampleRate;
-  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-  const data = buffer.getChannelData(0);
-  for (let i = 0; i < bufferSize; i++) {
-    data[i] = Math.random() * 2 - 1;
-  }
-
-  const source = ctx.createBufferSource();
-  source.buffer = buffer;
-  source.loop = true;
-
-  const filter = ctx.createBiquadFilter();
-  filter.type = preset.filter;
-  filter.frequency.value = preset.freq;
-  filter.Q.value = preset.q;
-
-  const gain = ctx.createGain();
-  gain.gain.value = ($('#volume-slider').value / 100) * 0.5;
-
-  source.connect(filter);
-  filter.connect(gain);
-  gain.connect(ctx.destination);
-  source.start();
-
-  soundNodes = { source, filter, gain, ctx };
+  const src = SOUND_FILES[name];
+  if (!src) return;
+  bgAudio = new Audio(src);
+  bgAudio.loop = true;
+  bgAudio.volume = ($('#volume-slider').value / 100) * 0.7;
+  bgAudio.play();
   activeSound = name;
 }
 
 function stopSound() {
-  if (soundNodes.source) {
-    try { soundNodes.source.stop(); } catch {}
-    soundNodes = {};
+  if (bgAudio) {
+    bgAudio.pause();
+    bgAudio.src = '';
+    bgAudio = null;
   }
   activeSound = null;
 }
 
 // 音量控制
 $('#volume-slider').addEventListener('input', (e) => {
-  if (soundNodes.gain) {
-    soundNodes.gain.gain.value = (e.target.value / 100) * 0.5;
+  if (bgAudio) {
+    bgAudio.volume = (e.target.value / 100) * 0.7;
+  }
+  isMuted = e.target.value === '0';
+  $('#volume-icon').textContent = isMuted ? '🔇' : '🔊';
+});
+
+// 静音 toggle
+$('#volume-icon').addEventListener('click', () => {
+  const slider = $('#volume-slider');
+  if (isMuted) {
+    slider.value = volumeBeforeMute;
+    if (bgAudio) bgAudio.volume = (volumeBeforeMute / 100) * 0.7;
+    isMuted = false;
+    $('#volume-icon').textContent = '🔊';
+  } else {
+    volumeBeforeMute = slider.value;
+    slider.value = 0;
+    if (bgAudio) bgAudio.volume = 0;
+    isMuted = true;
+    $('#volume-icon').textContent = '🔇';
   }
 });
 
@@ -444,6 +431,21 @@ document.addEventListener('keydown', (e) => {
     else if (currentTab === 'rest') startRestTimer();
   }
 });
+
+// 窗口控制按钮
+async function setupWindowControls() {
+  try {
+    const { appWindow } = await import('@tauri-apps/api/window');
+    $('#win-minimize').addEventListener('click', () => appWindow.minimize());
+    $('#win-maximize').addEventListener('click', () => appWindow.toggleMaximize());
+    $('#win-close').addEventListener('click', () => appWindow.close());
+  } catch {
+    // 浏览器环境下隐藏窗口按钮
+    const controls = $('.window-controls');
+    if (controls) controls.style.display = 'none';
+  }
+}
+setupWindowControls();
 
 // ----- 数据 -----
 function todayKey() { return new Date().toISOString().slice(0, 10); }
