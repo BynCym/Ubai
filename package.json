@@ -1,0 +1,13 @@
+{
+  "name": "ubai",
+  "version": "1.0.0",
+  "description": "Ubai - 专注时光，一款干净轻量的番茄钟桌面应用",
+  "scripts": {
+    "tauri": "tauri"
+  },
+  "keywords": ["focus", "pomodoro", "timer", "productivity"],
+  "license": "MIT",
+  "devDependencies": {
+    "@tauri-apps/cli": "^1.6.3"
+  }
+}

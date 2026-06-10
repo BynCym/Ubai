@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ubai - 专注时光</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- 背景图层 -->
+  <div class="bg-layer" id="bg-layer">
+    <div class="bg-overlay"></div>
+  </div>
+
+  <div id="app">
+    <!-- 顶部导航 -->
+    <nav class="nav">
+      <div class="nav-brand">Ubai</div>
+      <div class="nav-tabs">
+        <button class="nav-tab active" data-tab="focus">专注</button>
+        <button class="nav-tab" data-tab="rest">休息</button>
+        <button class="nav-tab" data-tab="dashboard">数据</button>
+      </div>
+    </nav>
+
+    <!-- 专注页面 -->
+    <div id="focus-page" class="page active">
+      <div class="focus-layout">
+        <!-- 左侧：背景音 -->
+        <div class="sound-panel">
+          <div class="panel-title">背景音</div>
+          <div class="sound-list">
+            <button class="sound-btn" data-sound="rain">
+              <span class="sound-icon">🌧</span>
+              <span class="sound-name">雨声</span>
+            </button>
+            <button class="sound-btn" data-sound="ocean">
+              <span class="sound-icon">🌊</span>
+              <span class="sound-name">海浪</span>
+            </button>
+            <button class="sound-btn" data-sound="wind">
+              <span class="sound-icon">🍃</span>
+              <span class="sound-name">风声</span>
+            </button>
+            <button class="sound-btn" data-sound="fire">
+              <span class="sound-icon">🔥</span>
+              <span class="sound-name">篝火</span>
+            </button>
+          </div>
+          <div class="volume-control">
+            <span class="volume-icon">🔊</span>
+            <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="50">
+          </div>
+        </div>
+
+        <!-- 右侧：计时器 -->
+        <div class="timer-panel">
+          <!-- 时间选择 -->
+          <div class="time-presets" id="time-presets">
+            <button class="preset-btn active" data-minutes="25">25 min</button>
+            <button class="preset-btn" data-minutes="custom">自定义</button>
+            <div class="custom-input-wrap" id="custom-wrap" style="display:none">
+              <input type="number" id="custom-minutes" class="custom-input" min="1" max="180" placeholder="分钟">
+            </div>
+          </div>
+
+          <!-- 液面计时器 -->
+          <div class="wave-container" id="wave-container">
+            <div class="wave-bg"></div>
+            <div class="wave-fill" id="wave-fill">
+              <div class="wave-surface">
+                <svg viewBox="0 0 500 30" preserveAspectRatio="none">
+                  <path class="wave-path wave-1" d="M0,15 C125,0 125,30 250,15 C375,0 375,30 500,15 L500,30 L0,30 Z"/>
+                  <path class="wave-path wave-2" d="M0,15 C125,30 125,0 250,15 C375,30 375,0 500,15 L500,30 L0,30 Z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="timer-display">
+              <div class="timer-time" id="timer-time">25:00</div>
+              <div class="timer-label" id="timer-label">专注中</div>
+            </div>
+          </div>
+
+          <!-- 控制按钮 -->
+          <div class="timer-controls">
+            <button class="ctrl-btn" id="btn-reset" title="重置">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 4v6h6M23 20v-6h-6"/>
+                <path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/>
+              </svg>
+            </button>
+            <button class="ctrl-btn ctrl-btn-main" id="btn-start" title="开始">
+              <svg class="icon-play" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="5,3 19,12 5,21"/>
+              </svg>
+              <svg class="icon-pause" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" style="display:none">
+                <rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>
+              </svg>
+            </button>
+            <button class="ctrl-btn" id="btn-skip" title="跳过">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5,4 15,12 5,20" fill="currentColor"/><line x1="19" y1="5" x2="19" y2="19"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 底部统计 -->
+      <div class="today-stats">
+        <div class="stat-item">
+          <div class="stat-value" id="stat-sessions">0</div>
+          <div class="stat-label">完成番茄</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="stat-minutes">0</div>
+          <div class="stat-label">专注分钟</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="stat-hours">0</div>
+          <div class="stat-label">累计时长</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 休息页面 -->
+    <div id="rest-page" class="page">
+      <div class="rest-layout">
+        <div class="rest-timer-display">
+          <div class="timer-time" id="rest-timer-time">05:00</div>
+          <div class="timer-label" id="rest-timer-label">休息中</div>
+        </div>
+        <div class="rest-presets">
+          <button class="preset-btn active" data-rest="short">短休息 5min</button>
+          <button class="preset-btn" data-rest="long">长休息 15min</button>
+        </div>
+        <div class="timer-controls">
+          <button class="ctrl-btn" id="btn-rest-reset" title="重置">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 4v6h6M23 20v-6h-6"/>
+              <path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/>
+            </svg>
+          </button>
+          <button class="ctrl-btn ctrl-btn-main" id="btn-rest-start" title="开始">
+            <svg class="icon-play" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5,3 19,12 5,21"/>
+            </svg>
+            <svg class="icon-pause" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" style="display:none">
+              <rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>
+            </svg>
+          </button>
+          <button class="ctrl-btn" id="btn-rest-skip" title="跳过">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="5,4 15,12 5,20" fill="currentColor"/><line x1="19" y1="5" x2="19" y2="19"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 数据看板页面 -->
+    <div id="dashboard-page" class="page">
+      <div class="dashboard-container">
+        <h2 class="section-title">专注时段分布 <span class="section-sub">近 7 天</span></h2>
+        <div class="heatmap-container" id="heatmap"></div>
+
+        <h2 class="section-title">近 7 天趋势</h2>
+        <div class="chart-container" id="weekly-chart"></div>
+
+        <h2 class="section-title">历史记录</h2>
+        <div class="history-list" id="history-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 背景选择面板 -->
+  <div class="bg-picker" id="bg-picker" style="display:none">
+    <div class="bg-picker-title">选择背景</div>
+    <div class="bg-thumbnails" id="bg-thumbnails"></div>
+    <label class="bg-upload-btn">
+      上传图片
+      <input type="file" id="bg-upload" accept="image/*" style="display:none">
+    </label>
+  </div>
+
+  <!-- 背景切换按钮 -->
+  <button class="bg-toggle" id="bg-toggle" title="切换背景">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>
+    </svg>
+  </button>
+
+  <script src="app.js"></script>
+</body>
+</html>

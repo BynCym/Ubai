@@ -1,0 +1,10 @@
+node_modules/
+dist/
+target/
+src-tauri/target/
+*.exe
+*.msi
+*.dmg
+*.AppImage
+.DS_Store
+Thumbs.db
