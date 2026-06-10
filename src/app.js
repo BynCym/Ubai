@@ -478,9 +478,7 @@ async function setupWindowControls() {
     $('#win-maximize').addEventListener('click', () => appWindow.toggleMaximize());
     $('#win-close').addEventListener('click', () => appWindow.close());
   } catch {
-    // 浏览器环境下隐藏窗口按钮
-    const controls = $('.window-controls');
-    if (controls) controls.style.display = 'none';
+    // 浏览器环境下窗口按钮不可用，但保持显示
   }
 }
 setupWindowControls();
