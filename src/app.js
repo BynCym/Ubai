@@ -472,16 +472,11 @@ document.addEventListener('keydown', (e) => {
 
 // 窗口控制按钮
 function setupWindowControls() {
-  const tauri = window.__TAURI__;
-  console.log('__TAURI__:', tauri);
-  if (!tauri) return;
-  console.log('__TAURI__.window:', tauri.window);
-  const win = tauri.window?.appWindow || tauri.window?.getCurrent?.() || null;
-  console.log('appWindow:', win);
-  if (!win) return;
-  $('#win-minimize').addEventListener('click', () => win.minimize());
-  $('#win-maximize').addEventListener('click', () => win.toggleMaximize());
-  $('#win-close').addEventListener('click', () => win.close());
+  const invoke = window.__TAURI__?.tauri?.invoke || window.__TAURI__?.invoke;
+  if (!invoke) return;
+  $('#win-minimize').addEventListener('click', () => invoke('minimize_window'));
+  $('#win-maximize').addEventListener('click', () => invoke('toggle_maximize'));
+  $('#win-close').addEventListener('click', () => invoke('close_window'));
 }
 setupWindowControls();
 
