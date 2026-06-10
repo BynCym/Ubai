@@ -40,15 +40,32 @@ const btnReset = $('#btn-reset');
 const btnSkip = $('#btn-skip');
 
 // ----- 背景 -----
-function loadBg() {
+async function loadBg() {
   const saved = localStorage.getItem(BG_KEY);
   if (saved) {
     try {
       const data = JSON.parse(saved);
+
+      if (data.type === 'tauri-path') {
+        try {
+          const { exists } = await import('@tauri-apps/api/fs');
+          const fileExists = await exists(data.path);
+          if (fileExists) {
+            const { convertFileSrc } = await import('@tauri-apps/api/tauri');
+            bgLayer.style.backgroundImage = `url(${convertFileSrc(data.path)})`;
+            return;
+          }
+          localStorage.removeItem(BG_KEY);
+        } catch {
+          localStorage.removeItem(BG_KEY);
+        }
+      }
+
       if (data.type === 'url') {
         bgLayer.style.backgroundImage = `url(${data.url})`;
         return;
       }
+
       if (data.type === 'index' && BG_IMAGES[data.index]) {
         currentBg = data.index;
       }
@@ -64,11 +81,32 @@ function setBg(index) {
   renderBgThumbnails();
 }
 
-function setCustomBg(file) {
-  const url = URL.createObjectURL(file);
-  bgLayer.style.backgroundImage = `url(${url})`;
-  localStorage.setItem(BG_KEY, JSON.stringify({ type: 'url', url }));
-  renderBgThumbnails();
+async function setCustomBg(file) {
+  try {
+    const { writeBinaryFile, createDir } = await import('@tauri-apps/api/fs');
+    const { appConfigDir, join } = await import('@tauri-apps/api/path');
+
+    const configDir = await appConfigDir();
+    const ext = file.name.split('.').pop() || 'jpg';
+    const fileName = `custom-bg-${Date.now()}.${ext}`;
+    const filePath = await join(configDir, fileName);
+
+    const buffer = await file.arrayBuffer();
+    await createDir(configDir, { recursive: true });
+    await writeBinaryFile(filePath, new Uint8Array(buffer));
+
+    localStorage.setItem(BG_KEY, JSON.stringify({ type: 'tauri-path', path: filePath }));
+
+    const { convertFileSrc } = await import('@tauri-apps/api/tauri');
+    bgLayer.style.backgroundImage = `url(${convertFileSrc(filePath)})`;
+    renderBgThumbnails();
+  } catch (err) {
+    console.error('Failed to save custom background:', err);
+    const url = URL.createObjectURL(file);
+    bgLayer.style.backgroundImage = `url(${url})`;
+    localStorage.setItem(BG_KEY, JSON.stringify({ type: 'url', url }));
+    renderBgThumbnails();
+  }
 }
 
 function renderBgThumbnails() {

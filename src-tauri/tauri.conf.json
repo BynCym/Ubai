@@ -8,12 +8,22 @@
   },
   "package": {
     "productName": "Ubai",
-    "version": "1.0.2"
+    "version": "1.0.3"
   },
   "tauri": {
     "allowlist": {
       "all": false,
       "window": {
+        "all": true
+      },
+      "fs": {
+        "writeFile": true,
+        "readFile": true,
+        "exists": true,
+        "createDir": true,
+        "scope": ["$APPCONFIG/**"]
+      },
+      "path": {
         "all": true
       }
     },
